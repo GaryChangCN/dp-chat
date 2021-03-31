@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "allowJs": false
+    },
+    "exclude": ["./node_modules"],
+    "include": ["src/**/*"]
+}
