@@ -2,20 +2,19 @@ import { createServer } from 'http'
 import { Server, Socket } from 'socket.io'
 import config from '../config'
 import authMiddleWare from './middlewares/auth.middleware'
-import { MessageResponse } from '../response/message.response'
 import Service, { ServiceCore } from './services'
 
 async function main() {
-    await ServiceCore.init()
     const httpServer = createServer()
     const io = new Server(httpServer, {})
+    const Service = await ServiceCore.init({})
 
     io.use(authMiddleWare)
 
     io.on('connection', (socket: Socket) => {
         console.log('connect', socket.id, socket.userInfo)
-
-        io.emit("data", MessageResponse.setData("ok"))
+        // 挂载 sandbox
+        Service.sandboxService.mountSocket(socket)
     })
 
     httpServer.listen(config.port, () => {

@@ -1,33 +1,16 @@
-import { io } from 'socket.io-client'
-import fs from 'fs-extra'
-import os from 'os'
-import path from 'path'
-import { MessageResponse } from '../response/message.response'
+import promptChooseRoom from './prompts/choose-room'
+import promptClientConfig from './prompts/client-config'
+import promptJoinRoomAndChat from './prompts/join-room-chat'
+import initConnection from './services/socket'
 
-const token = '123'
 async function main() {
-    const socket = io('ws://127.0.0.1:3001', {
-        auth: {
-            token,
-        },
-    })
-    socket.on('connect', () => {
-        console.log('connect', socket.id)
-    })
 
-    socket.on('data', (res: MessageResponse) => {
-        console.log('>>>', res.data)
-    })
+    const clientConfig = await promptClientConfig()
 
-    socket.on('disconnect', () => {
-        console.log('disconnect', socket.id)
-    })
+    await initConnection(clientConfig.host, clientConfig.token)
 
-    socket.on('connect_error', err => {
-        console.error('connect error', err.message)
-        setTimeout(() => {
-            socket.connect()
-        }, 3000)
-    })
+    const roomId = await promptChooseRoom()
+
+    await promptJoinRoomAndChat(roomId)
 }
 main()
