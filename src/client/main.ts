@@ -1,6 +1,6 @@
 import promptChooseRoom from './prompts/choose-room'
 import promptClientConfig from './prompts/client-config'
-import promptJoinRoomAndChat from './prompts/join-room-chat'
+import joinRoomAndChat from './services/join-room-chat'
 import initConnection from './services/socket'
 
 async function main() {
@@ -11,6 +11,6 @@ async function main() {
 
     const roomId = await promptChooseRoom()
 
-    await promptJoinRoomAndChat(roomId)
+    await joinRoomAndChat(roomId)
 }
 main()

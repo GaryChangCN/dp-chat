@@ -1,15 +1,10 @@
 import { Socket } from 'socket.io'
 import Service from '../services'
-import { RoomEntity } from '../typings/model'
 
 export default class Sandbox {
     private socket: Socket
     constructor(socket: Socket) {
         this.socket = socket
-    }
-
-    hello (a, b) {
-        return a + b
     }
 
     async listRooms () {
@@ -18,8 +13,22 @@ export default class Sandbox {
         return list
     }
 
-    joinRoom (roomId: string) {
+    async getRoomInfo (roomId: string) {
+        const list = await this.listRooms()
+        const info = list.find(o => o.id === roomId)
+        return info
+    }
+
+    async joinRoom (roomId: string) {
+        const roomInfo = await this.getRoomInfo(roomId)
+        if (!roomInfo) {
+            throw new Error("找不到该房间")
+        }
         this.socket.join(roomId)
-        return 'ok'
+        return roomInfo
+    }
+
+    async sendMessage (roomId: string, message: string) {
+        await Service.roomService.emitMessageInRoom(roomId, message)
     }
 }

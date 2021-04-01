@@ -1,7 +1,10 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
+import { Server } from 'socket.io'
+import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 import { RoomEntity, UserEntity } from '../typings/model'
+import { rpc } from './rpc.service'
 
 export default class RoomService {
     private roomDirPath = path.resolve(__dirname, '../../../datas/rooms')
@@ -15,8 +18,8 @@ export default class RoomService {
         const list = await this.listRooms()
         if (list.length === 0) {
             list.push({
-                id: "default",
-                desc: "默认房间"
+                id: 'default',
+                desc: '默认房间',
             })
         }
         fs.writeFile(this.roomConfigPath, JSON.stringify(list, null, 4))
@@ -33,5 +36,7 @@ export default class RoomService {
         return JSON.parse(data) as RoomEntity[]
     }
 
-    
+    async emitMessageInRoom(roomId: string, message: string) {
+        await rpc.useInRoom(roomId, `printRoomMessage`, message)
+    }
 }

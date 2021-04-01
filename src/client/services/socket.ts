@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client'
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events'
-import RPC from './rpc'
+import RPCService from './rpc'
 
 const RETRY_LIMIT = 10
 
@@ -12,16 +12,16 @@ export default async function initConnection(host: string, token: string) {
                 token,
             },
         })
-        const rpc = new RPC(socket)
+        const rpc = new RPCService()
         socket.on('connect', () => {
             console.info(`connect to server ${host}`, socket.id)
-            rpc.start()
+            rpc.start(socket)
 
             resolve(socket)
         })
 
         socket.on('disconnect', () => {
-            console.info('disconnect of server', socket.id)
+            // console.info('disconnect of server', socket.id)
         })
 
         socket.on('connect_error', err => {

@@ -4,19 +4,19 @@ import AuthService from './auth.service'
 import RoomService from './room.service'
 import RPCService from './rpc.service'
 
-interface InitOptions {}
+interface InitOptions {
+}
 
 export class ServiceCore {
+
     authService = new AuthService()
-    sandboxService = new RPCService()
+    rpcService = new RPCService()
     roomService = new RoomService()
 
     async init(opt: InitOptions) {
         await this.authService.init()
         await this.roomService.init()
     }
-
-
 
     static instance = new ServiceCore()
     // 对外调用 全部初始化
