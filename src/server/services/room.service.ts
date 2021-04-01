@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import os from 'os'
 import path from 'path'
-import { Server } from 'socket.io'
+import { Server, Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 import { RoomEntity, UserEntity } from '../typings/model'
 import { rpc } from './rpc.service'
@@ -9,10 +9,12 @@ import { rpc } from './rpc.service'
 export default class RoomService {
     private roomDirPath = path.resolve(__dirname, '../../../datas/rooms')
     private roomConfigPath = path.join(this.roomDirPath, 'room.config.json')
+
     async init() {
         await fs.ensureFile(this.roomConfigPath)
         await this.setDefaultRoomConfig()
     }
+
 
     private async setDefaultRoomConfig() {
         const list = await this.listRooms()

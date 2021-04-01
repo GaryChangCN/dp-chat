@@ -3,7 +3,9 @@ import { rpc } from '../services/rpc'
 import { RoomEntity } from '../../server/typings/model'
 
 export default async function promptChooseRoom() {
+    console.log('>>>11')
     const list = await rpc.use<RoomEntity[]>('listRooms')
+    console.log('>>>2')
     
     const ret = await inquirer.prompt([{
         type: 'list',

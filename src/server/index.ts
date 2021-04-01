@@ -7,8 +7,7 @@ import Service, { ServiceCore } from './services'
 async function main() {
     const httpServer = createServer()
     const io = new Server(httpServer, {})
-    const Service = await ServiceCore.init({
-    })
+    const Service = await ServiceCore.init({})
 
     io.use(authMiddleWare)
 
@@ -18,7 +17,14 @@ async function main() {
         Service.rpcService.start(socket, io)
 
         socket.on('disconnecting', () => {
+            // socket.rooms.forEach(room => {
+            //     socket.leave(room)
+            // })
             console.log('>> 断开', socket.rooms)
+        })
+
+        socket.on('disconnect', () => {
+            console.log('断开 Size', socket.rooms.size)
         })
     })
 

@@ -5,12 +5,18 @@ import initConnection from './services/socket'
 
 async function main() {
 
-    const clientConfig = await promptClientConfig()
-
-    await initConnection(clientConfig.host, clientConfig.token)
-
-    const roomId = await promptChooseRoom()
-
-    await joinRoomAndChat(roomId)
+    try {
+        const clientConfig = await promptClientConfig()
+    
+        await initConnection(clientConfig.host, clientConfig.token)
+    
+        console.log('>>>>')
+    
+        const roomId = await promptChooseRoom()
+    
+        await joinRoomAndChat(roomId)
+    } catch (error) {
+        console.error(error)
+    }
 }
 main()
