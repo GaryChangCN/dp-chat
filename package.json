@@ -1,11 +1,15 @@
 {
   "name": "dpchat",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev:server": "onchange -i -k 'src/server/**/*.ts' -- ts-node src/server/index.ts",
-    "dev:client": "onchange -i -k 'src/client/**/*.ts' -- ts-node src/client/main.ts"
+    "dev:client": "onchange -i -k 'src/client/**/*.ts' -- ts-node src/client/main.ts",
+    "build": "tsc"
+  },
+  "bin": {
+    "dp-chat": "./.bin/dp-chat"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.9",
