@@ -1,6 +1,6 @@
 {
   "name": "dpchat",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -9,8 +9,11 @@
     "build": "tsc"
   },
   "bin": {
-    "dp-chat": "./.bin/dp-chat"
+    "dpchat": "./.bin/dp-chat"
   },
+  "files": [
+    "biild/**/*"
+  ],
   "devDependencies": {
     "@types/fs-extra": "^9.0.9",
     "@types/inquirer": "^7.3.1",
