@@ -10,6 +10,10 @@ export default class Sandbox {
         return a + b
     }
 
+    notify(message: string) {
+        console.log(`[新提示]`, message)
+    }
+
     printRoomMessage (message: string) {
         console.log('[新消息]', message)
     }

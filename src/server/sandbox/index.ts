@@ -28,7 +28,7 @@ export default class Sandbox {
         return roomInfo
     }
 
-    async sendMessage (roomId: string, message: string) {
+    async sendMessageInRoom (roomId: string, message: string) {
         await Service.roomService.emitMessageInRoom(roomId, message)
     }
 }

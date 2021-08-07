@@ -9,9 +9,7 @@ async function main() {
         const clientConfig = await promptClientConfig()
     
         await initConnection(clientConfig.host, clientConfig.token)
-    
-        console.log('>>>>')
-    
+
         const roomId = await promptChooseRoom()
     
         await joinRoomAndChat(roomId)

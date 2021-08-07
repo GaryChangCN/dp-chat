@@ -10,7 +10,7 @@ export default async function joinRoomAndChat(roomId: string) {
     const sendMessage = async () => {
         const rawInput = await PromotWriteMessage()
 
-        await rpc.use('sendMessage', roomId, rawInput)
+        await rpc.use('sendMessageInRoom', roomId, rawInput)
 
         sendMessage()
     }

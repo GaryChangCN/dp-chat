@@ -12,9 +12,10 @@ async function main() {
     io.use(authMiddleWare)
 
     io.on('connection', (socket: Socket) => {
-        console.log('新的连接', socket.id, socket.userInfo)
         // 挂载 sandbox
         Service.rpcService.start(socket, io)
+
+        Service.rpcService.use('notify', `欢迎您：${socket.userInfo.nick}`)
 
         socket.on('disconnecting', () => {
             // socket.rooms.forEach(room => {

@@ -73,9 +73,9 @@ export default class RPCService {
         this.pubs.set(requestTransfer.data.uuid, callback)
     }
 
-    async use<T> (funcName: string, ...args: any[]): Promise<T> {
+    async use<T> (clientFuncName: string, ...args: any[]): Promise<T> {
         const result = await new Promise<T>((resolve, reject) => {
-            this.core(funcName, args || [], (ret: ResponseTransfer) => {
+            this.core(clientFuncName, args || [], (ret: ResponseTransfer) => {
                 if (ret.status === 0) {
                     resolve(ret.data)
                 } else {
