@@ -6,7 +6,11 @@ import { UserEntity } from '../typings/model'
 export default class AuthService {
     private userDataPath = path.resolve(__dirname, '../../../datas/users.json')
     async init() {
-        await fs.ensureFile(this.userDataPath)
+        try {
+            await fs.ensureFile(this.userDataPath)
+        } catch (error) {
+            console.error('没有 users.json 文件');
+        }
     }
 
     async listUsers() {

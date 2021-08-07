@@ -6,26 +6,25 @@ import RPCService from './rpc.service'
 
 interface InitOptions {
 }
+class ServiceCore {
 
-export class ServiceCore {
+    private isAsyncInited = false
 
     authService = new AuthService()
     rpcService = new RPCService()
     roomService = new RoomService()
 
-    async init(opt: InitOptions) {
+    async asyncInit(opt?: InitOptions) {
+        if (this.isAsyncInited) {
+            return
+        }
         await this.authService.init()
         await this.roomService.init()
-    }
 
-    static instance = new ServiceCore()
-    // 对外调用 全部初始化
-    static async init(opt: InitOptions) {
-        await ServiceCore.instance.init(opt)
-        return ServiceCore.instance
+        this.isAsyncInited = true
     }
 }
 
-const Service = ServiceCore.instance
+const Service = new ServiceCore()
 
 export default Service

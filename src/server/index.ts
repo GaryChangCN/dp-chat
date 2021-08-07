@@ -2,12 +2,12 @@ import { createServer } from 'http'
 import { Server, Socket } from 'socket.io'
 import config from '../config'
 import authMiddleWare from './middlewares/auth.middleware'
-import Service, { ServiceCore } from './services'
+import Service from './services/index'
 
 async function main() {
     const httpServer = createServer()
+    await Service.asyncInit()
     const io = new Server(httpServer, {})
-    const Service = await ServiceCore.init({})
 
     io.use(authMiddleWare)
 

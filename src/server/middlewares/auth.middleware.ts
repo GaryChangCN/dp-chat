@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io'
 import Service from '../services'
 
-
 export default async function authMiddleWare(socket: Socket, next) {
     const auth = socket.handshake.auth
     const token = auth?.token
@@ -11,7 +10,6 @@ export default async function authMiddleWare(socket: Socket, next) {
     }
 
     socket.userInfo = userInfo
-    
 
     return next()
 }
