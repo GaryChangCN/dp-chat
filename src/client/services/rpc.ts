@@ -31,7 +31,8 @@ export default class RPCService {
             const sandbox = this.sandbox
             const response = ResponseTransfer.builder(transfer.data.uuid)
             if (!Reflect.has(sandbox, transfer.data.functionName)) {
-                response.setError(402, '没有此函数')
+                console.log(sandbox, transfer.data.functionName)
+                response.setError(402, '没有此函数' + transfer.data.functionName)
                 return this.socket.emit('response', response)
             }
             try {

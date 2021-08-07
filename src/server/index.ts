@@ -13,19 +13,18 @@ async function main() {
 
     io.on('connection', (socket: Socket) => {
         // 挂载 sandbox
-        Service.rpcService.start(socket, io)
-
-        Service.rpcService.use('notify', `欢迎您：${socket.userInfo.nick}`)
+        Service.initRPC(socket, io)
+        console.log('新链接', socket.id, socket.userInfo.nick)
 
         socket.on('disconnecting', () => {
             // socket.rooms.forEach(room => {
             //     socket.leave(room)
             // })
-            console.log('>> 断开', socket.rooms)
+            console.log('断开链接', socket.rooms)
         })
 
         socket.on('disconnect', () => {
-            console.log('断开 Size', socket.rooms.size)
+            console.log('断开后 Size', socket.rooms.size)
         })
     })
 

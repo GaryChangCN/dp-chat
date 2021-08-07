@@ -19,7 +19,8 @@ export default async function promptClientConfig () {
             name: 'host',
             when: answers => {
                 return !answers.useExist
-            }
+            },
+            default: '127.0.0.1:3001'
         },
         {
             type: 'input',

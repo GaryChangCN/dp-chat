@@ -2,39 +2,34 @@ import { Server, Socket } from 'socket.io'
 import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 import RequestTransfer from '../../transfer/request.transfer'
 import ResponseTransfer from '../../transfer/response.transfer'
-import Sandbox from '../sandbox'
-
-
-export let rpc: RPCService
+import type Sandbox from '../sandbox'
 
 export default class RPCService {
     private socket: Socket
     private io: Server<DefaultEventsMap, DefaultEventsMap>
-    private sandbox: Sandbox
     // TODO: 超时自定
     private pubs = new Map<string, (ret: ResponseTransfer) => void>()
 
-    start (socket: Socket, io: Server<DefaultEventsMap, DefaultEventsMap>) {
-        if (rpc) {
-            return rpc
-        } else {
-            rpc = this
-        }
+    constructor(socket: Socket, io: Server<DefaultEventsMap, DefaultEventsMap>, private readonly sandbox: Sandbox) {
+        this.start(socket, io)
+    }
+
+    private start(socket: Socket, io: Server<DefaultEventsMap, DefaultEventsMap>) {
         this.socket = socket
         this.io = io
-        this.sandbox = new Sandbox(socket)
-
 
         this.requestListener()
         this.responseListener()
+
+        this.use('notify', `欢迎您：${socket.userInfo.nick}`)
     }
 
-    private requestListener () {
+    private requestListener() {
         this.socket.on('request', async (transfer: RequestTransfer) => {
             const sandbox = this.sandbox
             const response = ResponseTransfer.builder(transfer.data.uuid)
             if (!Reflect.has(sandbox, transfer.data.functionName)) {
-                response.setError(402, '没有此函数')
+                response.setError(402, '没有此函数' + transfer.data.functionName)
                 return this.socket.emit('response', response)
             }
             try {
@@ -46,13 +41,14 @@ export default class RPCService {
                 response.setData(result)
                 this.socket.emit('response', response)
             } catch (error) {
+                console.log('>>>', error)
                 response.setError(500, error.message)
                 this.socket.emit('response', response)
             }
         })
     }
 
-    private responseListener () {
+    private responseListener() {
         this.socket.on('response', (transfer: ResponseTransfer) => {
             const cb = this.pubs.get(transfer.uuid)
             if (!cb) {
@@ -73,7 +69,7 @@ export default class RPCService {
         this.pubs.set(requestTransfer.data.uuid, callback)
     }
 
-    async use<T> (clientFuncName: string, ...args: any[]): Promise<T> {
+    async use<T>(clientFuncName: string, ...args: any[]): Promise<T> {
         const result = await new Promise<T>((resolve, reject) => {
             this.core(clientFuncName, args || [], (ret: ResponseTransfer) => {
                 if (ret.status === 0) {
@@ -86,20 +82,25 @@ export default class RPCService {
         return result
     }
 
-    async useInRoom<T> (roomId: string, funcName: string, ...args: any[]): Promise<T> {
+    async useInRoom<T>(roomId: string, clientFuncName: string, ...args: any[]): Promise<T> {
         const result = await new Promise<T>((resolve, reject) => {
-            this.core(funcName, args || [], (ret: ResponseTransfer) => {
-                if (ret.status === 0) {
-                    resolve(ret.data)
-                } else {
-                    reject(new Error(`错误码${ret.error?.code} ${ret.error?.message}`))
-                }
-            }, roomId)
+            this.core(
+                clientFuncName,
+                args || [],
+                (ret: ResponseTransfer) => {
+                    if (ret.status === 0) {
+                        resolve(ret.data)
+                    } else {
+                        reject(new Error(`错误码${ret.error?.code} ${ret.error?.message}`))
+                    }
+                },
+                roomId,
+            )
         })
         return result
     }
 
-    dispose () {
+    dispose() {
         this.pubs.clear()
     }
 }

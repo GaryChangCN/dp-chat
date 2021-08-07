@@ -1,4 +1,6 @@
 import { Socket } from 'socket.io-client/build/socket'
+import { MessageRawContent } from '../../typings/common'
+import { format } from '../utils/utils'
 
 export default class Sandbox {
     private socket: Socket
@@ -14,7 +16,11 @@ export default class Sandbox {
         console.log(`[新提示]`, message)
     }
 
-    printRoomMessage (message: string) {
-        console.log('[新消息]', message)
+    /** 接受当前房间输出的消息 */
+    echoMessageInRoom (messageRaw: MessageRawContent) {
+        const echo = `${format(new Date(messageRaw.timestamp))} [${messageRaw.sender}] --------------
+    ${messageRaw.message}
+------------`
+        console.log(echo)
     }
 }

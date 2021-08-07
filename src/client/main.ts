@@ -17,4 +17,8 @@ async function main() {
         console.error(error)
     }
 }
+
+process.on('unhandledRejection', reason => {
+    console.error('系统异常', reason)
+})
 main()

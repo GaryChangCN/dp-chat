@@ -1,10 +1,18 @@
 import { Socket } from 'socket.io'
+import { MessageRawContent } from '../../typings/common'
 import Service from '../services'
+import type RPCService from '../services/rpc.service'
 
 export default class Sandbox {
     private socket: Socket
+    private rpcB: RPCService
     constructor(socket: Socket) {
         this.socket = socket
+    }
+
+    /** 设定 rpc 调用 */
+    setRPC(rpc: RPCService) {
+        this.rpcB = rpc
     }
 
     async listRooms () {
@@ -28,7 +36,12 @@ export default class Sandbox {
         return roomInfo
     }
 
-    async sendMessageInRoom (roomId: string, message: string) {
-        await Service.roomService.emitMessageInRoom(roomId, message)
+    async emitRomeMessage (roomId: string, message: string) {
+        const messageRaw: MessageRawContent = {
+            sender: this.socket.userInfo.nick,
+            message: message,
+            timestamp: Date.now()
+        }
+        await this.rpcB.useInRoom(roomId, `echoMessageInRoom`, messageRaw)
     }
 }
